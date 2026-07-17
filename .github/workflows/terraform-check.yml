@@ -35,8 +35,11 @@ jobs:
       - name: Run TFLint
         run: tflint --init && tflint
 
-      - name: Setup tfsec
-        uses: aquasecurity/setup-tfsec@v1
+      - name: Install tfsec
+        run: |
+          curl -L https://github.com/aquasecurity/tfsec/releases/latest/download/tfsec-linux-amd64 -o tfsec
+          chmod +x tfsec
+          sudo mv tfsec /usr/local/bin/
 
       - name: Run tfsec
-        run: tfsec --soft-fail
+        run: tfsec . --soft-fail

@@ -10,85 +10,80 @@ Este documento é exclusivamente de governança e arquitetura. Não define recur
 
 ## 3. Regras de Arquitetura
 
-### 3.1 Estrutura de Diretórios
+### 3.1 Estrutura de Diretórios Canônica
 
-- Objetivo: Garantir organização e separação clara entre bootstrap, ambientes e módulos reutilizáveis.
-- Regra: Todo o código Terraform deve residir dentro da pasta raiz chamada terraform/.
-- Motivação: Centralizar a implementação em um único ponto evita dispersão de código, facilita a leitura e reduz risco de inconsistência entre ambientes.
+- Objetivo: Garantir organização e separação clara entre bootstrap, ambientes (`live`) e módulos reutilizáveis.
+- Regra: A estrutura de diretórios deve seguir o `docs/architecture/ARCHITECTURE_CANON.md`. O código Terraform reside em diretórios específicos na raiz do projeto.
+- Motivação: Manter uma estrutura previsível evita a dispersão de código, facilita a governança e reduz a inconsistência entre ambientes.
 - Exemplos:
-  - Código Terraform deve estar em terraform/bootstrap/ para infraestrutura de bootstrap.
-  - Ambientes devem ficar em terraform/environments/staging/ e terraform/environments/production/.
-  - Módulos reutilizáveis devem ficar em terraform/modules/.
+  - `bootstrap/`: Contém a infraestrutura para o state backend do Terraform.
+  - `live/dev/` e `live/prod/`: Pontos de entrada que consomem módulos para compor os ambientes.
+  - `modules/`: Contém todos os módulos Terraform reutilizáveis.
 
 ### 3.2 Bootstrap Isolado
 
 - Objetivo: Provisionar o Remote State de forma independente e controlada.
-- Regra: O diretório terraform/bootstrap/ será independente e conterá os arquivos obrigatórios main.tf, providers.tf, variables.tf, outputs.tf e versions.tf para provisionar o Remote State com S3 e DynamoDB.
-- Motivação: O bootstrap deve ser executado uma única vez para criar os recursos básicos de estado remoto e não deve ser alterado após a execução inicial, reduzindo risco de inconsistência e corrupção do estado.
+- Regra: O diretório `bootstrap/` é autônomo, não consome outros módulos e contém a definição dos recursos (S3, DynamoDB) para o backend do Terraform.
+- Motivação: O bootstrap é executado uma única vez para criar a fundação do state. Isolá-lo previne corrupção do state e alterações acidentais.
 - Exemplos:
-  - O bootstrap deve ser responsável somente pela criação do bucket S3 e da tabela DynamoDB do Terraform State.
-  - Após a execução inicial, qualquer alteração futura no bootstrap deve ser tratada como uma revisão explícita.
+  - O `bootstrap/` é responsável exclusivamente pela criação do bucket S3 e da tabela DynamoDB para o Terraform State.
 
-### 3.3 Ambientes
+### 3.3 Ambientes (`live`)
 
 - Objetivo: Estruturar ambientes de forma consistente, previsível e isolada.
-- Regra: Os ambientes devem ficar em terraform/environments/ com subpastas staging/ e production/.
-- Motivação: Ambientes distintos precisam de isolamento lógico e operacional, além de permitir evolução independente entre homologação e produção.
+- Regra: Os ambientes são definidos nos diretórios `live/`, com subpastas para `dev/` e `prod/`.
+- Motivação: Ambientes distintos precisam de isolamento lógico e operacional. A estrutura `live/` permite a composição explícita de módulos por ambiente (ver `ADR-001`).
 - Exemplos:
-  - Cada ambiente deve possuir os arquivos main.tf, providers.tf, backend.tf, variables.tf, outputs.tf, terraform.tfvars e locals.tf.
-  - O arquivo locals.tf deve definir a variável environment com o valor correspondente ao ambiente.
+  - Cada diretório de ambiente (ex: `live/dev/`) contém os arquivos `main.tf`, `providers.tf`, `backend.tf`, etc., para orquestrar o consumo dos módulos.
 
 ### 3.4 Módulos Orientados a Recursos
 
 - Objetivo: Promover reuso, coesão e baixo acoplamento.
-- Regra: Os módulos devem ficar em terraform/modules/ e ser nomeados pelo recurso AWS que representam, por exemplo: api-gateway, lambda, s3, iam.
-- Motivação: Módulos orientados a recursos tornam o código mais intuitivo, simplificam manutenção e permitem reutilização em diferentes ambientes.
+- Regra: Módulos residem em `modules/` e são nomeados pelo recurso ou capacidade que representam (ex: `iam`, `s3`, `lambda`).
+- Motivação: Módulos especializados tornam o código mais intuitivo, simplificam a manutenção e são facilmente reutilizáveis em diferentes ambientes.
 - Exemplos:
-  - Um módulo para API Gateway deve conter lógica específica para esse recurso.
-  - Um módulo para IAM deve ser granular e especializado.
+  - O módulo `lambda` deve conter a lógica para provisionar uma função Lambda e suas configurações associadas.
+  - O módulo `iam` deve ser granular e focado em papéis e políticas específicas.
 
 ### 3.5 Módulos IAM Granulares
 
-- Objetivo: Aplicar princípio de menor privilégio e reduzir risco de excesso de permissões.
-- Regra: O módulo IAM deve ser granular, com responsabilidade bem definida e políticas específicas por uso.
-- Motivação: Módulos IAM amplos aumentam a superfície de ataque e dificultam auditoria e manutenção.
+- Objetivo: Aplicar o princípio de menor privilégio.
+- Regra: O módulo IAM deve ser granular, com políticas específicas por caso de uso para reduzir o excesso de permissões.
+- Motivação: Módulos IAM amplos aumentam a superfície de ataque e dificultam a auditoria.
 - Exemplos:
   - Um módulo IAM para execução de Lambda deve receber apenas as permissões mínimas necessárias.
-  - Políticas devem ser separadas por responsabilidade sempre que possível.
 
 ### 3.6 Controle de Versão
 
-- Objetivo: Garantir reprodutibilidade e compatibilidade entre ambientes.
-- Regra: É obrigatório o arquivo versions.tf em todos os módulos e ambientes.
-- Motivação: Definir versões de providers e Terraform evita incompatibilidades e melhora previsibilidade da execução.
+- Objetivo: Garantir reprodutibilidade e compatibilidade.
+- Regra: É obrigatório o uso de `versions.tf` em `bootstrap/` e em cada ambiente (`live/*`).
+- Motivação: Definir versões de providers e do Terraform evita que atualizações inesperadas quebrem a compatibilidade.
 - Exemplos:
-  - Um módulo de S3 deve incluir versions.tf com as versões mínimas ou fixas de Terraform e providers.
-  - O ambiente staging deve incluir versions.tf para garantir consistência com os módulos utilizados.
+  - O diretório `live/dev/` deve ter um `versions.tf` para garantir consistência com os módulos utilizados.
 
 ### 3.7 Tags Obrigatórias
 
 - Objetivo: Garantir governança, rastreabilidade e custeio.
-- Regra: Todos os módulos devem receber uma variável map(string) chamada tags com os campos obrigatórios: project, environment, owner, cost_center e managed_by.
-- Motivação: Tags padronizadas facilitam auditoria, cobrança, gestão de custos e políticas de governança.
+- Regra: Todos os módulos devem receber uma variável `map(string)` chamada `tags` e propagá-la para os recursos. As tags obrigatórias são: `project`, `environment`, `owner`, `cost_center` e `managed_by`.
+- Motivação: Tags padronizadas são essenciais para auditoria, gestão de custos e automação.
 - Exemplos:
-  - Exemplo de estrutura: tags = { project = "startup-xyz", environment = "staging", owner = "platform-team", cost_center = "engineering", managed_by = "terraform" }.
+  - `tags = { project = "startup-xyz", environment = "dev", owner = "platform-team", cost_center = "engineering", managed_by = "terraform" }`
 
 ### 3.8 Inputs e Outputs
 
 - Objetivo: Evitar hardcoding e promover encapsulamento.
-- Regra: Todos os valores devem passar por variáveis. Recursos nunca devem ser expostos diretamente; a interface de módulos deve ocorrer via outputs.tf.
-- Motivação: Inputs e outputs bem definidos tornam o código mais seguro, reutilizável e simples de evoluir.
+- Regra: Valores não devem ser "hardcodados". A interface de um módulo com o resto do sistema deve ser feita exclusivamente via `variables.tf` (entradas) e `outputs.tf` (saídas).
+- Motivação: Interfaces bem definidas tornam o código mais seguro, reutilizável e fácil de manter.
 - Exemplos:
-  - Não é permitido hardcodear nomes, ARNs ou IDs diretamente no módulo.
-  - Cada módulo deve expor apenas as informações relevantes por meio de outputs.
+  - Um ARN de um recurso não deve ser "hardcodado" dentro de um módulo; ele deve ser recebido como uma variável.
 
 ### 3.9 Providers
 
-- Objetivo: Centralizar definição de providers em ambientes e evitar acoplamento indevido.
-- Regra: Módulos não possuem provider. Providers ficam apenas nas pastas de environments.
-- Motivação: Separar a declaração de providers dos módulos reduz acoplamento e facilita evolução da infraestrutura.
+- Objetivo: Centralizar a definição de providers nos ambientes.
+- Regra: Módulos (`modules/`) não devem conter blocos `provider`. Eles são declarados apenas nos pontos de entrada (`bootstrap/` e `live/*`).
+- Motivação: Separar a declaração de providers dos módulos reutilizáveis reduz o acoplamento e facilita a gestão da configuração (ex: múltiplas regiões ou contas).
 - Exemplos:
-  - O provider AWS deve ser definido em terraform/environments/staging/providers.tf e terraform/environments/production/providers.tf.
+  - O provider AWS deve ser definido em `live/dev/providers.tf`.
   - Módulos reutilizáveis devem apenas consumir o provider fornecido pelo ambiente.
 
 ## 4. Restrições Obrigatórias
@@ -126,6 +121,8 @@ Este documento é exclusivamente de governança e arquitetura. Não define recur
 
 - Antes de criar, mover ou excluir diretórios, compare a alteração com o `docs/architecture/ARCHITECTURE_CANON.md`. Em caso de divergência, interrompa a execução.
 - O agente está ESTRITAMENTE PROIBIDO de criar novos diretórios, mover arquivos ou alterar a arquitetura para tentar corrigir erros de validação do Terraform. O agente deve sempre diagnosticar a causa raiz primeiro e solicitar aprovação humana caso a solução envolva mudanças estruturais.
+- É ESTRITAMENTE PROIBIDO executar comandos que alterem a raiz do repositório (como `git init`), criar branches, alterar remotes ou realizar commits sem a autorização explícita do operador.
+- Toda alteração em arquivos dentro de `.github/workflows/` exige apresentação do diff e justificativa. Você não pode substituir Actions ou alterar estratégias de CI/CD automaticamente para tentar corrigir falhas.
 - Alterações nos arquivos `providers.tf`, `versions.tf`, `backend.tf` e `terraform/bootstrap/main.tf` exigem a exibição obrigatória do diff no chat e aprovação explícita do Tech Lead antes de prosseguir.
 - É PROIBIDO declarar `provider`, `backend` ou `terraform.required_providers` dentro de qualquer diretório `modules/`.
 - Nenhum módulo poderá ser criado sem que exista previamente um documento de contrato em `docs/contracts/` contendo: Objetivo, Inputs, Outputs, Dependências, Consumidores, Recursos AWS e Critérios de Aceite.

@@ -1,12 +1,13 @@
 .PHONY: architecture-check fmt validate plan apply destroy init lint sec doctor
 
-TERRAFORM_DIR = live/dev
+ENV ?= dev
+TERRAFORM_DIR := live/$(ENV)
 
 architecture-check:
 	powershell -NoProfile -ExecutionPolicy Bypass -File scripts/architecture-check.ps1
 
 fmt:
-	terraform fmt -recursive bootstrap live/dev modules
+	terraform fmt -recursive bootstrap $(TERRAFORM_DIR) modules
 
 validate:
 	powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Location '$(TERRAFORM_DIR)'; terraform validate"
@@ -21,10 +22,10 @@ destroy:
 	powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Location '$(TERRAFORM_DIR)'; terraform destroy -auto-approve"
 
 init:
-	powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Location '$(TERRAFORM_DIR)'; terraform init -backend-config=backend.dev.hcl"
+	powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Location '$(TERRAFORM_DIR)'; terraform init -backend-config=backend.$(ENV).hcl"
 
 lint:
-	terraform fmt -check -recursive bootstrap live/dev modules
+	terraform fmt -check -recursive bootstrap $(TERRAFORM_DIR) modules
 
 sec:
 	@powershell -NoProfile -Command "if (Get-Command tfsec -ErrorAction SilentlyContinue) { tfsec $(TERRAFORM_DIR) } else { Write-Host 'tfsec not installed' }"
