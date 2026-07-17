@@ -1,0 +1,12 @@
+# Terraform local state and secrets
+.terraform/
+**/.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+terraform.tfvars
+**/terraform.tfvars
+*.tfplan
+**/*.tfplan
+.env

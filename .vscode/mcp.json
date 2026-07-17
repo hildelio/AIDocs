@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "terraform-registry": {
+      "command": "npx",
+      "args": ["-y", "terraform-mcp-server"]
+    },
+    "aws-mcp": {
+      "command": "npx",
+      "args": ["-y", "@awslabs/mcp-server", "--profile", "default"]
+    }
+  }
+}

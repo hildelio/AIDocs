@@ -1,0 +1,11 @@
+bucket_name         = "startup-xyz-terraform-state"
+dynamodb_table_name = "startup-xyz-terraform-locks"
+aws_region          = "us-east-1"
+
+tags = {
+  project     = "startup-xyz"
+  environment = "bootstrap"
+  owner       = "platform-team"
+  cost_center = "engineering"
+  managed_by  = "terraform"
+}

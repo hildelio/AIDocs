@@ -1,0 +1,7 @@
+flowchart LR
+    LiveDev[Live Dev] --> IAM[Module IAM]
+    LiveDev --> S3[Module S3]
+    LiveDev --> Lambda[Module Lambda]
+    Lambda --> IAM
+    Lambda --> S3
+    API[API Gateway] --> Lambda
