@@ -23,3 +23,15 @@ module "s3" {
   bucket_name = "app-data"
   tags        = local.tags
 }
+
+module "lambda" {
+  source = "../../modules/lambda"
+
+  function_name = "${var.project}-${var.environment}-hello"
+  runtime       = "python3.12"
+  handler       = "index.handler"
+  filename      = "${path.module}/../../modules/lambda/hello.zip"
+  iam_role_arn  = module.iam.lambda_execution_role_arn
+  tags          = local.tags
+}
+

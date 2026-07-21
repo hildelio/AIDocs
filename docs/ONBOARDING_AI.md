@@ -39,7 +39,7 @@ Extraídas de `AGENTS.md` e `ARCHITECTURE_CANON.md`.
 - **Resolução de Conflitos**: Em caso de divergência entre documentos, a hierarquia de precedência é: `docs/adr/` > `docs/architecture/ARCHITECTURE_CANON.md` > `AGENTS.md`. Qualquer divergência encontrada **deve ser reportada**.
 - **Isolamento de Módulos**: Módulos em `modules/` **NUNCA** devem conter `provider`, `backend` ou `versions.tf`.
 - **Independência do Bootstrap**: O diretório `bootstrap/` é autônomo, não consome módulos e não depende de remote state.
-- **Contratos de Módulo**: Nenhum módulo pode ser criado ou alterado sem um contrato correspondente e atualizado em `docs/contracts/`.
+- **Contratos de Módulo**: Apenas módulos públicos, reutilizáveis ou consumidos por outros módulos exigem contrato prévio e atualizado em `docs/contracts/`. Módulos internos ou de escopo limitado a um único ambiente podem ser implementados sem contrato prévio, desde que documentados em ADR.
 - **Revisão de Arquivos Core**: Alterações em `providers.tf`, `backend.tf`, `bootstrap/main.tf` ou nos workflows de CI/CD (`.github/workflows/`) exigem a exibição do `diff` e aprovação humana explícita.
 - **Tags Obrigatórias**: Todos os recursos devem ser marcados com as tags: `project`, `environment`, `owner`, `cost_center`, e `managed_by`.
 - **Menor Privilégio**: Módulos IAM devem ser granulares e criar apenas as permissões estritamente necessárias.
