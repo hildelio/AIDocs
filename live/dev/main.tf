@@ -30,7 +30,7 @@ module "lambda" {
   function_name = "${var.project}-${var.environment}-hello"
   runtime       = "python3.12"
   handler       = "index.handler"
-  filename      = "${path.module}/../../modules/lambda/hello.zip"
+  filename      = "${path.module}/artifacts/hello.zip"
   iam_role_arn  = module.iam.lambda_execution_role_arn
   tags          = local.tags
 }
