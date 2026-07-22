@@ -26,6 +26,7 @@ class IngestionService:
             "id": document_id,
             "user_id": user_id,
             "filename": filename,
+            "s3_key": f"{user_id}/{filename}",
             "created_at": created_at,
             "status": "PENDING_UPLOAD"
         }
