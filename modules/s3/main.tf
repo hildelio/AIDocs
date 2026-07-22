@@ -27,3 +27,18 @@ resource "aws_s3_bucket_public_access_block" "this" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+# FinOps: Transição automática para armazenamento de menor custo (GLACIER) após 1 ano para arquivos antigos
+resource "aws_s3_bucket_lifecycle_configuration" "this" {
+  bucket = aws_s3_bucket.this.id
+
+  rule {
+    id     = "archive-to-glacier"
+    status = "Enabled"
+
+    transition {
+      days          = 365
+      storage_class = "GLACIER"
+    }
+  }
+}
