@@ -11,3 +11,5 @@ terraform.tfvars
 **/*.tfplan
 .env
 terraform.tfstate*
+*.tfplan
+tfplan
