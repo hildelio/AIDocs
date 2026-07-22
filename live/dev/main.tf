@@ -43,3 +43,19 @@ module "api_gateway" {
   lambda_function_name = module.lambda.function_name
   tags                 = local.tags
 }
+
+module "dynamodb" {
+  source = "../../modules/dynamodb"
+
+  table_name = "${var.project}-${var.environment}-data"
+  hash_key   = "id"
+  tags       = local.tags
+}
+
+module "iam_policy_dynamodb" {
+  source = "../../modules/iam_policy_dynamodb"
+
+  role_name = module.iam.lambda_execution_role_name
+  table_arn = module.dynamodb.table_arn
+  tags      = local.tags
+}
