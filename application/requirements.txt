@@ -1,0 +1,2 @@
+# Dependências da aplicação
+boto3
