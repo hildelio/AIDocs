@@ -29,9 +29,15 @@ module "lambda" {
 
   function_name = "${var.project}-${var.environment}-ingestion"
   runtime       = "python3.12"
-  handler       = "src/handlers/upload_handler.handler"
+  handler       = "src.handlers.upload_handler.handler"
   filename      = "${path.module}/../../artifact.zip"
   iam_role_arn  = module.iam.lambda_execution_role_arn
+  
+  environment_variables = {
+    S3_BUCKET_NAME      = module.s3.bucket_id
+    DYNAMODB_TABLE_NAME = module.dynamodb.table_name
+  }
+
   tags          = local.tags
 }
 
@@ -58,6 +64,14 @@ module "iam_policy_dynamodb" {
   role_name = module.iam.lambda_execution_role_name
   table_arn = module.dynamodb.table_arn
   tags      = local.tags
+}
+
+module "iam_policy_s3" {
+  source = "../../modules/iam_policy_s3"
+
+  role_name  = module.iam.lambda_execution_role_name
+  bucket_arn = module.s3.bucket_arn
+  tags       = local.tags
 }
 
 module "ocr_pipeline" {

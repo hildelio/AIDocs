@@ -70,9 +70,17 @@ module "ocr_lambda" {
 
   function_name = "${var.project}-${var.environment}-ocr"
   runtime       = "python3.12"
-  handler       = "src/handlers/ocr_handler.handler"
+  handler       = "src.handlers.ocr_handler.handler"
   filename      = var.artifact_path
   iam_role_arn  = aws_iam_role.ocr_lambda_exec.arn
+  timeout       = 30
+  memory_size   = 256
+
+  environment_variables = {
+    S3_BUCKET_NAME      = var.s3_bucket_id
+    DYNAMODB_TABLE_NAME = split("/", var.dynamodb_table_arn)[1]
+  }
+
   tags          = var.tags
 }
 

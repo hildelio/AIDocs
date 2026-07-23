@@ -21,3 +21,8 @@ resource "aws_iam_role" "lambda_exec" {
     cost_center = var.cost_center
   }
 }
+
+resource "aws_iam_role_policy_attachment" "lambda_exec_basic" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}

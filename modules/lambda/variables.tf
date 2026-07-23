@@ -27,3 +27,21 @@ variable "tags" {
   description = "Mandatory platform tags: project, environment, owner, cost_center, managed_by."
   type        = map(string)
 }
+
+variable "environment_variables" {
+  description = "Environment variables for the Lambda function."
+  type        = map(string)
+  default     = {}
+}
+
+variable "timeout" {
+  description = "Amount of time your Lambda Function has to run in seconds."
+  type        = number
+  default     = 3
+}
+
+variable "memory_size" {
+  description = "Amount of memory in MB your Lambda Function can use at runtime."
+  type        = number
+  default     = 128
+}
