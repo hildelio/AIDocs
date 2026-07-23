@@ -1,6 +1,7 @@
 resource "aws_s3_bucket" "this" {
-  bucket = "${var.tags["project"]}-${var.tags["environment"]}-${var.bucket_name}"
-  tags   = var.tags
+  bucket        = "${var.tags["project"]}-${var.tags["environment"]}-${var.bucket_name}"
+  tags          = var.tags
+  force_destroy = true
 }
 
 resource "aws_s3_bucket_versioning" "this" {

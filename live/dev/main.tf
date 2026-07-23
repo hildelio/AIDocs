@@ -32,13 +32,13 @@ module "lambda" {
   handler       = "src.handlers.upload_handler.handler"
   filename      = "${path.module}/../../artifact.zip"
   iam_role_arn  = module.iam.lambda_execution_role_arn
-  
+
   environment_variables = {
     S3_BUCKET_NAME      = module.s3.bucket_id
     DYNAMODB_TABLE_NAME = module.dynamodb.table_name
   }
 
-  tags          = local.tags
+  tags = local.tags
 }
 
 module "api_gateway" {

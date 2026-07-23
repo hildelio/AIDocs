@@ -81,7 +81,7 @@ module "ocr_lambda" {
     DYNAMODB_TABLE_NAME = split("/", var.dynamodb_table_arn)[1]
   }
 
-  tags          = var.tags
+  tags = var.tags
 }
 
 resource "aws_lambda_permission" "allow_s3" {

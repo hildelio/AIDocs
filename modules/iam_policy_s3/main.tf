@@ -1,7 +1,7 @@
 resource "aws_iam_policy" "s3_put" {
   name        = "${var.role_name}-s3-put"
   description = "Allows PutObject on the S3 bucket"
-  
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
