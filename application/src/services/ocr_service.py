@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime, timezone
+from botocore.exceptions import ClientError
 from src.repositories.textract_repository import TextractRepository
 from src.repositories.dynamodb_repository import DynamoDBRepository
 
@@ -49,6 +50,21 @@ class OcrService:
             )
             logger.info(f"Successfully processed document {document_id}")
             
+        except ClientError as e:
+            logger.exception(f"AWS ClientError processing document {document_id}: {e}")
+            
+            status_to_save = "FAILED"
+            if "SubscriptionRequiredException" in str(e):
+                status_to_save = "FAILED_EXTERNAL_DEPENDENCY"
+                
+            try:
+                self.dynamodb_repository.update_document(
+                    document_id,
+                    {"status": status_to_save}
+                )
+            except Exception:
+                logger.exception(f"Failed to update status to {status_to_save} for document {document_id}")
+                
         except Exception:
             logger.exception(f"Failed to process document {document_id}")
             
