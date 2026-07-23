@@ -31,15 +31,15 @@ graph_attr = {
     "fontsize": "22",
     "fontname": "Arial Bold",
     "bgcolor": "transparent",
-    "nodesep": "1.2",
-    "ranksep": "2.5",
+    "nodesep": "1.8",
+    "ranksep": "3.2",
     "pad": "0.8",
     "fontcolor": "#232F3E",
     "splines": "ortho",
 }
 
 node_attr = {
-    "fontsize": "13",
+    "fontsize": "14",
     "fontname": "Arial Bold",
     "fontcolor": "#232F3E",
     "labelloc": "b",
@@ -48,15 +48,15 @@ node_attr = {
 cluster_attr_main = {
     "fontsize": "16",
     "fontname": "Arial Bold",
-    "fontcolor": "#FFFFFF",
-    "bgcolor": "#232F3E",
+    "fontcolor": "#232F3E",
+    "bgcolor": "#F7F9FC",
     "margin": "40.0",
-    "pencolor": "#FF9900",
+    "pencolor": "#232F3E",
     "penwidth": "2.0",
 }
 
 cluster_attr_ingestion = {
-    "fontsize": "13",
+    "fontsize": "14",
     "fontname": "Arial Bold",
     "fontcolor": "#232F3E",
     "bgcolor": "#E8F5E9",
@@ -66,7 +66,7 @@ cluster_attr_ingestion = {
 }
 
 cluster_attr_ocr = {
-    "fontsize": "13",
+    "fontsize": "14",
     "fontname": "Arial Bold",
     "fontcolor": "#232F3E",
     "bgcolor": "#FFF3E0",
@@ -76,7 +76,7 @@ cluster_attr_ocr = {
 }
 
 cluster_attr_observability = {
-    "fontsize": "13",
+    "fontsize": "14",
     "fontname": "Arial Bold",
     "fontcolor": "#232F3E",
     "bgcolor": "#F3E5F5",
@@ -85,10 +85,10 @@ cluster_attr_observability = {
     "penwidth": "1.5",
 }
 
-edge_primary = {"color": "#FF9900", "penwidth": "2.5", "fontsize": "11", "fontname": "Arial Bold", "fontcolor": "#e86200"}
-edge_async = {"color": "#4CAF50", "penwidth": "2.0", "fontsize": "11", "fontname": "Arial Bold", "fontcolor": "#2E7D32", "style": "dashed"}
-edge_error = {"color": "#F44336", "penwidth": "2.0", "fontsize": "11", "fontname": "Arial Bold", "fontcolor": "#C62828", "style": "dotted"}
-edge_state = {"color": "#9C27B0", "penwidth": "2.0", "fontsize": "11", "fontname": "Arial Bold", "fontcolor": "#6A1B9A"}
+edge_primary = {"color": "#FF9900", "penwidth": "2.5", "fontsize": "13", "fontname": "Arial Bold", "fontcolor": "#232F3E"}
+edge_async = {"color": "#2E7D32", "penwidth": "2.0", "fontsize": "13", "fontname": "Arial Bold", "fontcolor": "#232F3E", "style": "dashed"}
+edge_error = {"color": "#C62828", "penwidth": "2.0", "fontsize": "13", "fontname": "Arial Bold", "fontcolor": "#232F3E", "style": "dotted"}
+edge_state = {"color": "#6A1B9A", "penwidth": "2.0", "fontsize": "13", "fontname": "Arial Bold", "fontcolor": "#232F3E"}
 
 with Diagram(
     "Arquitetura Serverless Final — Startup XYZ (MVP TCC)",
