@@ -82,7 +82,7 @@ def main():
                 status = item.get('status')
                 print(f"  -> Tentativa {attempt}/{max_attempts} | Status: {status}")
                 
-                if status in ["PROCESSED", "FAILED"]:
+                if status in ["PROCESSED", "FAILED", "FAILED_EXTERNAL_DEPENDENCY"]:
                     final_item = item
                     break
             else:
