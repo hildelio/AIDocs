@@ -1,4 +1,4 @@
-# ADR-004: Estratégia de Evolução da Plataforma de IA
+# ADR-005: Estratégia de Evolução da Plataforma de IA
 
 ## Status
 Aceito
