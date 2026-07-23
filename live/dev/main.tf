@@ -27,10 +27,10 @@ module "s3" {
 module "lambda" {
   source = "../../modules/lambda"
 
-  function_name = "${var.project}-${var.environment}-hello"
+  function_name = "${var.project}-${var.environment}-ingestion"
   runtime       = "python3.12"
-  handler       = "index.handler"
-  filename      = "${path.module}/artifacts/hello.zip"
+  handler       = "src/handlers/upload_handler.handler"
+  filename      = "${path.module}/../../artifact.zip"
   iam_role_arn  = module.iam.lambda_execution_role_arn
   tags          = local.tags
 }
@@ -58,4 +58,16 @@ module "iam_policy_dynamodb" {
   role_name = module.iam.lambda_execution_role_name
   table_arn = module.dynamodb.table_arn
   tags      = local.tags
+}
+
+module "ocr_pipeline" {
+  source = "../../modules/ocr_pipeline"
+
+  project            = var.project
+  environment        = var.environment
+  tags               = local.tags
+  s3_bucket_id       = module.s3.bucket_id
+  s3_bucket_arn      = module.s3.bucket_arn
+  dynamodb_table_arn = module.dynamodb.table_arn
+  artifact_path      = "${path.module}/../../artifact.zip"
 }

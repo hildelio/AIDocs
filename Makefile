@@ -3,6 +3,9 @@
 ENV ?= dev
 TERRAFORM_DIR := live/$(ENV)
 
+build-app:
+	powershell -NoProfile -ExecutionPolicy Bypass -Command "if (Test-Path 'artifact.zip') { Remove-Item 'artifact.zip' }; Compress-Archive -Path 'application/src', 'application/requirements.txt' -DestinationPath 'artifact.zip'"
+
 architecture-check:
 	powershell -NoProfile -ExecutionPolicy Bypass -File scripts/architecture-check.ps1
 
