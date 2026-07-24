@@ -25,7 +25,7 @@ destroy:
 	powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Location '$(TERRAFORM_DIR)'; terraform destroy -auto-approve"
 
 init:
-	powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Location '$(TERRAFORM_DIR)'; terraform init -backend-config=backend.$(ENV).hcl"
+	powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Location '$(TERRAFORM_DIR)'; terraform init '-backend-config=backend.$(ENV).hcl'"
 
 lint:
 	terraform fmt -check -recursive bootstrap $(TERRAFORM_DIR) modules

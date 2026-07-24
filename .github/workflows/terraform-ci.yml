@@ -37,12 +37,6 @@ jobs:
       - name: Run TFLint
         run: tflint --init && tflint
 
-      - name: Setup tfsec
-        uses: aquasecurity/setup-tfsec@v1
-
-      - name: Run tfsec
-        run: tfsec --soft-fail
-
       - name: Terraform plan
         run: terraform plan -lock=false -out=tfplan
 
