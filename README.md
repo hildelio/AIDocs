@@ -22,6 +22,21 @@ Este repositório implementa o **MVP de uma plataforma de ingestão e extração
 
 ---
 
+## Documentação do Projeto
+
+A documentação deste repositório foi construída para atender critérios rígidos de auditoria e escalabilidade. Acesse os documentos oficiais abaixo:
+
+- 📄 [**Case Compliance Report (RTM)**](docs/CASE_COMPLIANCE_REPORT.md): Matriz de Rastreabilidade provando o atendimento de 100% dos requisitos (S3 Lifecycle, Block Public Access, IAM Least Privilege, etc.).
+- 🖼️ [**Diagrama de Arquitetura Final**](arquitetura/arquitetura_serverless_startup_xyz_final.png): Visão serverless macro em alta resolução.
+- 🏗️ **Architecture Decision Records (ADRs)**:
+  - [ADR-001: Diretórios Live vs Modules](docs/adr/ADR-001-live-directory.md)
+  - [ADR-002: Contratos de Módulos (Inputs/Outputs)](docs/adr/ADR-002-module-contracts.md)
+  - [ADR-003: Grafo de Dependências IaC](docs/adr/ADR-003-module-dependency-graph.md)
+  - [ADR-004: Segurança com Pre-signed URLs no S3](docs/adr/ADR-004-pre-signed-url.md)
+  - [ADR-005: Estratégia de Evolução (Platform IA)](docs/adr/ADR-005-estrategia-evolucao-plataforma-ia.md)
+
+---
+
 ## Arquitetura
 
 ![Arquitetura Serverless Final — Startup XYZ](arquitetura/arquitetura_serverless_startup_xyz_final.png)
