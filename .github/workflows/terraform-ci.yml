@@ -34,7 +34,7 @@ jobs:
 
       - name: Terraform init core
         working-directory: live/dev
-        run: terraform init -backend=false
+        run: terraform init -backend-config=backend.dev.hcl
 
       - name: Terraform validate
         working-directory: live/dev
