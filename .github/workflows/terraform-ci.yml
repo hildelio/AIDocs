@@ -26,22 +26,26 @@ jobs:
         run: terraform fmt -check -recursive
 
       - name: Terraform init core
+        working-directory: live/dev
         run: terraform init -backend=false
 
       - name: Terraform validate
+        working-directory: live/dev
         run: terraform validate
 
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
 
       - name: Run TFLint
+        working-directory: live/dev
         run: tflint --init && tflint
 
       - name: Terraform plan
+        working-directory: live/dev
         run: terraform plan -lock=false -out=tfplan
 
       - name: Upload tfplan
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
-          path: tfplan
+          path: live/dev/tfplan
